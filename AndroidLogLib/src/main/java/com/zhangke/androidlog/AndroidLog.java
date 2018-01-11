@@ -15,21 +15,26 @@ public class AndroidLog {
     public AndroidLog(String logDir) {
         this.mLogDir = logDir;
         mLogQueue = new LogQueue(mLogDir);
+        mLogQueue.start();
     }
 
-    public static void e(String text){
-
+    public void e(String text){
+        mLogQueue.add(new LogBean(buildMessage(text), LogType.ERROR));
     }
 
-    public static void d(String text){
-
+    public void d(String text){
+        mLogQueue.add(new LogBean(buildMessage(text), LogType.DEBUG));
     }
 
-    public static void wtf(String text){
-
+    public void info(String text){
+        mLogQueue.add(new LogBean(buildMessage(text), LogType.INFO));
     }
 
-    private static String buildMessage(String text){
+    public void wtf(String text){
+        mLogQueue.add(new LogBean(buildMessage(text), LogType.WTF));
+    }
+
+    private String buildMessage(String text){
 
         return text;
     }

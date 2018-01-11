@@ -12,7 +12,7 @@ public class LogQueue {
     /**
      * 存储日志的队列
      */
-    private LinkedBlockingDeque<String> mLogQueue = new LinkedBlockingDeque<>();
+    private LinkedBlockingDeque<LogBean> mLogQueue = new LinkedBlockingDeque<>();
     private LogDispatcher mLogDispatcher;
 
     public LogQueue(String logDir){
@@ -23,4 +23,7 @@ public class LogQueue {
         mLogDispatcher.start();
     }
 
+    public void add(LogBean logBean){
+
+    }
 }

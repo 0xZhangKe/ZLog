@@ -16,10 +16,10 @@ public class LogDispatcher extends Thread {
     /**
      * 存储日志的队列
      */
-    private LinkedBlockingDeque<String> mLogQueue = new LinkedBlockingDeque<>();
+    private LinkedBlockingDeque<LogBean> mLogQueue = new LinkedBlockingDeque<>();
     private String mLogDir;
 
-    public LogDispatcher(LinkedBlockingDeque<String> logQueue, String logDir){
+    public LogDispatcher(LinkedBlockingDeque<LogBean> logQueue, String logDir){
         this.mLogQueue = logQueue;
         this.mLogDir = logDir;
     }
@@ -28,9 +28,9 @@ public class LogDispatcher extends Thread {
     public void run() {
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         while(true){
-            String logText;
+            LogBean logBean;
             try {
-                logText = mLogQueue.take();
+                logBean = mLogQueue.take();
             }catch(InterruptedException e){
                 Log.e(TAG, "run: ", e);
             }
