@@ -1,29 +1,49 @@
 package com.zhangke.androidlog;
 
-import java.util.concurrent.LinkedBlockingDeque;
+import android.util.Log;
+
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Singleton class.</p>
  * Created by ZhangKe on 2018/1/11.
  */
 
-public class LogQueue {
+class LogQueue {
+
+    private static final String TAG = "LogQueue";
 
     /**
      * 存储日志的队列
      */
-    private LinkedBlockingDeque<LogBean> mLogQueue = new LinkedBlockingDeque<>();
+    private LinkedBlockingQueue<LogBean> mLogQueue = new LinkedBlockingQueue<>();
     private LogDispatcher mLogDispatcher;
 
-    public LogQueue(String logDir){
+    LogQueue(String logDir){
         mLogDispatcher = new LogDispatcher(mLogQueue, logDir);
     }
 
-    public void start(){
+    void start(){
         mLogDispatcher.start();
     }
 
-    public void add(LogBean logBean){
-
+    void add(final LogBean logBean){
+        try {
+            boolean b = mLogQueue.offer(logBean);
+            if (!b) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mLogQueue.put(logBean);
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "run: ", e);
+                        }
+                    }
+                }).start();
+            }
+        }catch(Exception e){
+            Log.e(TAG, "add: ", e);
+        }
     }
 }

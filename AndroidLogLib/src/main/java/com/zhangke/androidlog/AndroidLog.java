@@ -1,6 +1,10 @@
 package com.zhangke.androidlog;
 
-import android.content.Context;
+import android.util.Log;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Logging helper class.
@@ -10,32 +14,70 @@ import android.content.Context;
 public class AndroidLog {
 
     private LogQueue mLogQueue;
-    private String mLogDir;
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.CHINA);
+    private static Boolean saveToFile = true;
+
+    public synchronized static void openSaveToFile(){
+        saveToFile = true;
+    }
+
+    public synchronized static void closeSaveToFile(){
+        saveToFile = false;
+    }
 
     public AndroidLog(String logDir) {
-        this.mLogDir = logDir;
-        mLogQueue = new LogQueue(mLogDir);
+        mLogQueue = new LogQueue(logDir);
         mLogQueue.start();
     }
 
-    public void e(String text){
-        mLogQueue.add(new LogBean(buildMessage(text), LogType.ERROR));
+    public void e(String TAG, String text){
+        Log.e(TAG, text);
+        if(saveToFile) {
+            mLogQueue.add(new LogBean(buildMessage(TAG, text), LogType.ERROR));
+        }
     }
 
-    public void d(String text){
-        mLogQueue.add(new LogBean(buildMessage(text), LogType.DEBUG));
+    public void e(String TAG, String text, Throwable e){
+        Log.e(TAG, "e: ", e);
+        if(saveToFile) {
+            mLogQueue.add(new LogBean(buildMessage(TAG, String.format("%s--->%s", text, e.toString())), LogType.ERROR));
+        }
     }
 
-    public void info(String text){
-        mLogQueue.add(new LogBean(buildMessage(text), LogType.INFO));
+    public void d(String TAG, String text){
+        Log.e(TAG, text);
+        if(saveToFile) {
+            mLogQueue.add(new LogBean(buildMessage(TAG, text), LogType.DEBUG));
+        }
     }
 
-    public void wtf(String text){
-        mLogQueue.add(new LogBean(buildMessage(text), LogType.WTF));
+    public void info(String TAG, String text){
+        Log.e(TAG, text);
+        if(saveToFile) {
+            mLogQueue.add(new LogBean(buildMessage(TAG, text), LogType.INFO));
+        }
     }
 
-    private String buildMessage(String text){
+    public void wtf(String TAG, String text){
+        Log.e(TAG, text);
+        if(saveToFile) {
+            mLogQueue.add(new LogBean(buildMessage(TAG, text), LogType.WTF));
+        }
+    }
 
-        return text;
+    private String buildMessage(String TAG, String text){
+        try {
+            StringBuilder sbLog = new StringBuilder();
+            sbLog.append(simpleDateFormat.format(new Date()));
+            sbLog.append("/");
+            sbLog.append(TAG);
+            sbLog.append("--->");
+            sbLog.append(text);
+            sbLog.append("\n\n");
+            return sbLog.toString();
+        }catch(Exception e){
+            Log.e(TAG, "buildMessage: ", e);
+            return "";
+        }
     }
 }
