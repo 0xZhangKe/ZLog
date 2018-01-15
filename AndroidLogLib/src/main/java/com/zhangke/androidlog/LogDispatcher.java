@@ -1,14 +1,13 @@
 package com.zhangke.androidlog;
 
 import android.os.Process;
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -19,7 +18,7 @@ class LogDispatcher extends Thread {
 
     private static final String TAG = "LogDispatcher";
 
-    private final int MAX_LOG_SIZE = 1000;
+    private final int MAX_LOG_SIZE = 1024 * 1024;
 
     /**
      * 存储日志的队列
@@ -41,17 +40,7 @@ class LogDispatcher extends Thread {
                 try {
                     LogBean logBean;
                     logBean = mLogQueue.take();
-                    switch(logBean.getLogType()){
-                        case ERROR: {
-                            saveTextToFile(mLogDir+ "/errorLog.txt", logBean.getLogText());
-                            break;
-                        }
-                        case INFO:
-                        case WTF:
-                        case DEBUG: {
-                            break;
-                        }
-                    }
+                    saveTextToFile(getLogFilePath(logBean.getLogType()), logBean.getLogText());
                 } catch (InterruptedException e) {
                     Log.e(TAG, "run: ", e);
                 }
@@ -65,25 +54,38 @@ class LogDispatcher extends Thread {
      * 普通日志文件名： log1.txt；
      * 错误日志文件名：errorLog1.txt;
      * 每个日志文件最大为 1Mb，超过 1Mb 文件名累加 1.
+     *
+     * @param logType 日志类型
+     * @return 文件绝对路径
      */
-    private String getLogFile(LogType logType){
-        String fileName = "";
+    private String getLogFilePath(LogType logType) {
+        String returnFileName = "";
         try {
             switch (logType) {
                 case ERROR: {
-                    fileName = String.format("%s/errorLog1.txt", mLogDir);
+                    returnFileName = String.format("%s/errorLog1.txt", mLogDir);
                     File file = new File(mLogDir);
                     if (file.exists()) {
                         String[] fileArray = file.list();
-                        if(fileArray != null && fileArray.length > 0){
+                        if (fileArray != null && fileArray.length > 0) {
                             List<String> errorLogList = new ArrayList<>();
-                            for(String s : fileArray){
-                                if(s.contains("errorLog")){
+                            for (String s : fileArray) {
+                                if (s.contains("errorLog")) {
                                     errorLogList.add(s);
                                 }
                             }
-                            if(!errorLogList.isEmpty()){
-                                errorLogList
+                            if (!errorLogList.isEmpty()) {
+                                Collections.sort(errorLogList);
+                                String lastFileName = errorLogList.get(errorLogList.size() - 1);
+                                if (new File(String.format("%s/%s", mLogDir, lastFileName)).length() > MAX_LOG_SIZE) {
+                                    if (lastFileName.contains(".")) {
+                                        int LastLogCount = Integer.valueOf(lastFileName.split("\\.")[0].replaceAll("errorLog", "").trim());
+                                        LastLogCount++;
+                                        returnFileName = String.format("%s/errorLog%s.txt", mLogDir, LastLogCount);
+                                    }
+                                } else {
+                                    returnFileName = String.format("%s/%s", mLogDir, lastFileName);
+                                }
                             }
                         }
                     }
@@ -92,19 +94,25 @@ class LogDispatcher extends Thread {
                 case INFO:
                 case WTF:
                 case DEBUG: {
-                    fileName = String.format("%s/log1.txt", mLogDir);
+                    returnFileName = String.format("%s/log1.txt", mLogDir);
                     break;
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "getLogFile: ", e);
         }
-        return fileName;
+        return returnFileName;
     }
 
-    private void saveTextToFile(String fileName, String text){
+    /**
+     * 将文本追加到到文件末尾
+     *
+     * @param filePath 文件绝对路径（包含文件名）
+     * @param text     需要保存的文本
+     */
+    private void saveTextToFile(String filePath, String text) {
         try {
-            File file = new File(fileName);
+            File file = new File(filePath);
             if (!new File(file.getParent()).exists()) {
                 File parentFile1 = new File(file.getParent());
                 if (!parentFile1.exists()) {
@@ -116,13 +124,13 @@ class LogDispatcher extends Thread {
                 }
                 new File(file.getParent()).mkdir();
             }
-            if(!file.exists()){
+            if (!file.exists()) {
                 file.createNewFile();
             }
             FileWriter writer = new FileWriter(file, true);
             writer.write(text);
             writer.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "saveTextToFile: ", e);
         }
     }
