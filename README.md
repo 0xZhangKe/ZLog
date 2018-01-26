@@ -23,6 +23,11 @@ AndroidLog.e("TAG", "Internet Error");
 Error 类型日志保存到对应目录下的 errorLog1.txt 中，如果 errorLog1.txt 大小超过 1MB，则重新输出到 errorLog2.txt 中，以此类推，当 Error 类型的文件个数超过 9 个时，会自动清理所有 Error 类型的日志文件，并从 errorLog1.txt 重新开始；</br>
 INFO、DEBUG、WTF 类型的日志会保存到 log.txt 中，其他规则与同上；</br>
 CRASH 类型的文件会保存到 crash.txt 中，其他规则同上。</br>
+## 实现原理
+在调用 AndroidLog.Init(String) 方法之后会通过日志保存的路径创建并初始化一个 LogQueue 对象并调用其 start() 方法，往后每次调用输出日志的方法都会像其中添加一条记录；</br>
+LogQueue 在初始化时会创建一个 LinkedBlockingQueue 阻塞队列用于存储日志，同时会通过日志保存的路径及LinkedBlockingQueue创建一条 LogDispatcher 线程，在调用其 start() 方法时，会启动 LogDispatcher 线程；</br>
+LogDispatcher 内有一个死循环用于不停地调用 take() 方法从阻塞队列 LinkedBlockingQueue 中取出一条日志信息并打印，如果 LinkedBlockingQueue 内没有日志数据线程则进入阻塞状态，直到有新的日志。</br>
+
 ## 类文档</br>
 ### AndroidLog</br>
 
