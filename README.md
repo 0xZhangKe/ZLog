@@ -5,7 +5,7 @@
 ```
 compile 'com.github.0xZhangKe:AndroidLog:2.0'
 ```
-在调用使用前需要通过日志输出文件对其初始化，例如下面这样：</br>
+在使用前需要通过日志的输出文件夹对其初始化，例如下面这样：</br>
 ```
 ZldLog.Init(String.format("%s/log/", getExternalFilesDir(null).getPath()));
 ```
