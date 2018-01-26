@@ -10,6 +10,7 @@ public enum LogType {
     ERROR,
     INFO,
     DEBUG,
-    WTF
+    WTF,
+    CRASH
 
 }

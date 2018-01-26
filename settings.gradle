@@ -1,1 +1,1 @@
-include ':app', ':AndroidLogLib'
+include ':AndroidLogLib'
