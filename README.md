@@ -124,3 +124,7 @@ saveToFile -> 是否将该条日志输出到文件中<br>
 TAG -> TAG 标签<br>
 text -> 要输出的文本<br>
 </br>
+#### public static synchronized void openSaveToFile()<br>
+打开将日志保存到文件的开关
+#### public static synchronized void closeSaveToFile()<br>
+关闭将日志保存到文件的开关
