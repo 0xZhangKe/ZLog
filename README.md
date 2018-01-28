@@ -7,7 +7,7 @@ compile 'com.github.0xZhangKe:AndroidLog:2.0'
 ```
 在使用前需要通过日志的输出文件夹对其初始化，例如下面这样：</br>
 ```
-ZldLog.Init(String.format("%s/log/", getExternalFilesDir(null).getPath()));
+AndroidLog.Init(String.format("%s/log/", getExternalFilesDir(null).getPath()));
 ```
 一般来说可以在 Application 中的 onCreate() 方法中对其初始化，初始化完成后即可直接使用其中提供的方法输出日志，其中提供了一系列的打印日志的方法，使用方式如下：</br>
 ```
