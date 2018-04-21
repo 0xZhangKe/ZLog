@@ -1,4 +1,4 @@
-## AndroidLog</br>
+## ZLog</br>
 用于记录 Android 运行时产生的日志、Crash 等信息并保存到本地文件中的框架。</br>
 ## 使用方式</br>
 首先添加 AndroidLog 依赖：</br>
@@ -13,11 +13,11 @@ ZLog.Init(String.format("%s/log/", getExternalFilesDir(null).getPath()));
 ```
 ZLog.e("TAG", "Internet Error");
 ```
-其中的日志输出的方法参数等等都是按照 Android 的日志工具 Log 来的，并且在调用 AndroidLog 的方法后会自动调用 Log 对应的方法输出日志；</br>
-所以完全可以使用 AndroidLog 替代 Log，因为使用 AndroidLog 打印日志时，不仅会输出到文件中，还会调用 Log 中的相关方法打印到控制台；</br>
+其中的日志输出的方法参数等等都是按照 Android 的日志工具 Log 来的，并且在调用 ZLog 的方法后会自动调用 Log 对应的方法输出日志；</br>
+所以完全可以使用 ZLog 替代 Log，因为使用 ZLog 打印日志时，不仅会输出到文件中，还会调用 Log 中的相关方法打印到控制台；</br>
 为了灵活控制日志是否输出到日志文件还是单纯的只输出到控制台中，其中提供了两种控制方式控制其行为（默认情况下，日志会同时输出到控制台及日志文件中）。</br>
 第一种：调用 openSaveToFile() 或 closeSaveToFile() 方法开启或关闭整个 ZLog 框架的行为，比如只要调用了 closeSaveToFile() 方法，那么直到你调用 openSaveToFile() 方法前，所有的日志都不会输出到文件中，反之亦然；</br>
-第二种：针对单条日志文件，可以传一个 boolean 类型的参数控制，比如 AndroidLog.e("TAG", "Internet Error"， false) ,那么此条日志记录就不会输出到文件中。</br>
+第二种：针对单条日志文件，可以传一个 boolean 类型的参数控制，比如 ZLog.e("TAG", "Internet Error"， false) ,那么此条日志记录就不会输出到文件中。</br>
 具体可以查看下面的类文档。</br>
 ## 日志文件的保存规则：</br>
 Error 类型日志保存到对应目录下的 errorLog1.txt 中，如果 errorLog1.txt 大小超过 1MB，则重新输出到 errorLog2.txt 中，以此类推，当 Error 类型的文件个数超过 9 个时，会自动清理所有 Error 类型的日志文件，并从 errorLog1.txt 重新开始；</br>
