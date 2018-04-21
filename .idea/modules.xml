@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AndroidLog.iml" filepath="$PROJECT_DIR$/AndroidLog.iml" />
-      <module fileurl="file://$PROJECT_DIR$/AndroidLogLib/AndroidLogLib.iml" filepath="$PROJECT_DIR$/AndroidLogLib/AndroidLogLib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\code\ZLog\AndroidLog.iml" filepath="D:\code\ZLog\AndroidLog.iml" />
+      <module fileurl="file://D:\code\ZLog\AndroidLogLib\AndroidLogLib.iml" filepath="D:\code\ZLog\AndroidLogLib\AndroidLogLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ZLog.iml" filepath="$PROJECT_DIR$/ZLog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ZLogLib/ZLogLib.iml" filepath="$PROJECT_DIR$/ZLogLib/ZLogLib.iml" />
+      <module fileurl="file://D:\code\ZLog\app\app.iml" filepath="D:\code\ZLog\app\app.iml" />
     </modules>
   </component>
 </project>
